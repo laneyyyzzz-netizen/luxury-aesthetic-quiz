@@ -1,14 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useMemo } from "react";
 
-// --- 商业配置区 ---
+// --- 配置与数据 ---
 const ACCESS_CODE = "202688"; 
 const THEME = {
-  bg: "#F9F9F7",        
-  card: "#FFFFFF",      
-  primary: "#81D8D0",   
-  accent: "#B89B72",    
-  text: "#1C1C1C",      
-  subText: "#666666"    
+  bg: "#F9F9F7", card: "#FFFFFF", primary: "#81D8D0", accent: "#B89B72", text: "#1C1C1C"
 };
 
 const DIMENSIONS = ["classic", "avantGarde", "minimal", "opulent", "lowKey"] as const;
@@ -17,7 +12,6 @@ const DIMENSION_LABELS: Record<DimensionKey, string> = {
   classic: "经典显贵", avantGarde: "先锋个性", minimal: "极简冷淡", opulent: "高调华丽", lowKey: "老钱风"
 };
 
-// 引入 20 道题目数据
 const QUESTIONS = [
   { id: 1, title: "玩手机时，你最常…", options: [{ label: "刷理财/新闻", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "看潮流/街拍", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "清理桌面/收纳", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "刷派对/度假 vlog", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 2, title: "出门约会，你第一反应？", options: [{ label: "穿好外套包包", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "造型要有记忆点", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "要舒服好活动", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "气场先拉满", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -62,56 +56,88 @@ export const QuizApp: React.FC = () => {
     else { setLoading(true); setTimeout(() => { setLoading(false); setFinished(true); }, 2000); }
   };
 
+  const finalAnalysis = useMemo(() => {
+    if (!finished) return null;
+    const scores: Record<DimensionKey, number> = { classic: 0, avantGarde: 0, minimal: 0, opulent: 0, lowKey: 0 };
+    answers.forEach((ansIdx, qIdx) => {
+      const opt = QUESTIONS[qIdx]?.options[ansIdx];
+      if (opt) (Object.keys(opt.scores) as DimensionKey[]).forEach(k => scores[k] += opt.scores[k]);
+    });
+    const total = Object.values(scores).reduce((a, b) => a + b, 0);
+    const top = (Object.keys(scores) as DimensionKey[]).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    return { scores, top, percents: (Object.keys(scores) as DimensionKey[]).map(k => ({ key: k, val: Math.round((scores[k]/total)*100) })) };
+  }, [finished, answers]);
+
+  const BRAND_MAP: Record<DimensionKey, any> = {
+    classic: { name: "Hermès / Patek Philippe", desc: "秩序与经典的极致守护者。", tags: ["恒久", "工艺", "身份"] },
+    avantGarde: { name: "Maison Margiela / Rick Owens", desc: "审美是先锋艺术的实验场。", tags: ["解构", "先锋", "表达"] },
+    minimal: { name: "The Row / Lemaire", desc: "极致的减法是最高级的加法。", tags: ["纯粹", "质感", "内敛"] },
+    opulent: { name: "Versace / Dolce & Gabbana", desc: "生命就该肆意闪耀，极度张扬。", tags: ["极致", "张扬", "浪漫"] },
+    lowKey: { name: "Brunello Cucinelli / Loro Piana", desc: "真正的奢华无需喧哗，在于触感。", tags: ["老钱", "舒适", "隐奢"] }
+  };
+
   if (!isUnlocked) {
     return (
-      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-center">
-        <div className="max-w-sm w-full p-10 bg-white rounded-3xl shadow-xl border border-stone-100">
-          <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-widest mb-2">LUXURY LAB</h1>
-          <p className="text-xs text-stone-400 uppercase tracking-tighter mb-10">美学基因实验室 专属入口</p>
-          <input 
-            type="text" 
-            placeholder="输入邀请码" 
-            value={inputCode}
-            onChange={(e) => setInputCode(e.target.value)}
-            className="w-full text-center text-2xl border-b-2 border-stone-100 py-3 mb-8 focus:outline-none focus:border-stone-400 text-black"
-          />
-          <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm shadow-lg active:scale-95 transition-transform">开启测试</button>
+      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex items-center justify-center p-6">
+        <div className="max-w-sm w-full p-10 bg-white rounded-[40px] shadow-xl text-center">
+          <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-[0.2em] mb-8">LUXURY DNA</h1>
+          <input type="text" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none text-black" />
+          <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm shadow-lg">开启测试</button>
         </div>
       </div>
     );
   }
 
-  if (loading) {
-    return (
-      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex flex-col items-center justify-center px-10">
-        <p style={{ color: THEME.accent }} className="text-center mb-4 font-serif italic text-lg animate-pulse">正在解析你的审美基因...</p>
-      </div>
-    );
-  }
+  if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse">解析中美学基因...</div>;
 
   return (
-    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-10 px-4 font-sans">
+    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-10 px-4 font-sans leading-relaxed">
       <div className="max-w-2xl mx-auto">
         {!finished ? (
-          <div className="bg-white rounded-3xl p-8 shadow-sm border border-stone-100">
-             <div className="flex justify-between items-end mb-10">
-                <span style={{ color: THEME.accent }} className="text-xs font-serif">AESTHETIC TEST</span>
-                <span className="text-[10px] text-stone-300">Q{currentIndex + 1} / 20</span>
+          <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm">
+             <div className="flex justify-between items-center mb-12 text-[10px] tracking-widest text-stone-300 uppercase">
+                <span>Aesthetic Research</span>
+                <span>{currentIndex + 1} / 20</span>
              </div>
-             <h2 className="text-2xl font-medium mb-10 leading-tight">{QUESTIONS[currentIndex]?.title}</h2>
-             <div className="space-y-4">
+             <h2 className="text-2xl font-light mb-12">{QUESTIONS[currentIndex]?.title}</h2>
+             <div className="grid gap-4">
                {QUESTIONS[currentIndex]?.options.map((opt, idx) => (
-                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-5 rounded-2xl border border-stone-100 hover:border-stone-300 transition-all active:scale-[0.98]">
-                   <span className="text-stone-600">{opt.label}</span>
+                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-6 rounded-2xl border border-stone-50 hover:bg-stone-50 transition-colors text-stone-500 hover:text-stone-900">
+                   {opt.label}
                  </button>
                ))}
              </div>
           </div>
         ) : (
-          <div className="bg-white rounded-3xl p-8 shadow-lg border border-stone-100 text-center">
-            <h2 style={{ color: THEME.accent }} className="text-3xl font-serif mb-6">测试完成</h2>
-            <p className="text-stone-500 mb-8 text-sm">您的审美 DNA 已上传云端，正在为您匹配品牌画像...</p>
-            <button onClick={() => window.location.reload()} className="text-xs text-stone-300 underline tracking-widest">重新测试</button>
+          <div className="bg-white rounded-[40px] p-10 shadow-xl text-center animate-in fade-in duration-1000">
+            <span style={{ color: THEME.accent }} className="text-xs tracking-[0.4em] uppercase">Result</span>
+            <h2 className="text-4xl font-serif mt-6 mb-10">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
+            
+            {/* 简易雷达图（进度条形式） */}
+            <div className="space-y-4 mb-12 max-w-xs mx-auto text-left">
+               {finalAnalysis?.percents.map(p => (
+                 <div key={p.key}>
+                    <div className="flex justify-between text-[10px] mb-1 text-stone-400 uppercase tracking-tighter">
+                      <span>{DIMENSION_LABELS[p.key as DimensionKey]}</span>
+                      <span>{p.val}%</span>
+                    </div>
+                    <div className="h-[2px] w-full bg-stone-50 overflow-hidden">
+                      <div className="h-full bg-stone-300 transition-all duration-1000" style={{ width: `${p.val}%` }} />
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            <div className="py-8 border-y border-stone-50 italic text-stone-500 font-serif mb-10 text-sm">
+              "{BRAND_MAP[finalAnalysis!.top].desc}"
+            </div>
+
+            <div className="mb-12">
+              <p className="text-[10px] text-stone-300 uppercase tracking-widest mb-2">灵魂匹配品牌</p>
+              <p className="text-xl font-light tracking-tight" style={{ color: THEME.accent }}>{BRAND_MAP[finalAnalysis!.top].name}</p>
+            </div>
+
+            <button onClick={() => window.location.reload()} className="text-[10px] text-stone-300 underline tracking-[0.2em] uppercase">Restart Analysis</button>
           </div>
         )}
       </div>
