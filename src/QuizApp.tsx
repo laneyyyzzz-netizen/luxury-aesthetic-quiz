@@ -31,7 +31,7 @@ const QUESTIONS = [
   { id: 8, title: "旅行选地，你先看？", options: [{ label: "城市历史街区", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "展览/音乐节", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "人少景色干净", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "豪华酒店度假村", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 9, title: "逛完商场，你最容易？", options: [{ label: "被品质打动", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "被设计惊到", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "被舒适感拿捏", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "被“看起来很贵”吸走", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 10, title: "如果你是一句形容词？", options: [{ label: "稳，拎得清", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "怪，有点厉害", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "冷，但很高级", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "亮，很有存在感", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
-  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
+  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, base: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 12, title: "艺术品收藏，你更偏好？", options: [{ label: "经典大师版画、古董家具", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "当代先锋装置、实验影像", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简雕塑、单色调画作", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "巴洛克/洛可可风格、水晶雕塑", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 13, title: "选择度假目的地，你偏向？", options: [{ label: "巴黎、佛罗伦萨等老牌城市", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "柏林、东京等先锋艺术区", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "北欧、新西兰等人少自然风光", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "摩纳哥、迪拜等奢华度假地", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 14, title: "收到一份神秘礼物，你希望是？", options: [{ label: "Birkin/Kelly 级经典手袋", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "联名限量/设计师签名款", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "Cashmere 羊绒围巾/针织", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "钻石首饰/镶钻腕表", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -134,7 +134,7 @@ export const QuizApp: React.FC = () => {
   if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif">正在生成你的审美画像...</div>;
 
   return (
-    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-10 px-4 font-sans leading-relaxed text-stone-800">
+    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-6 px-4 font-sans leading-relaxed text-stone-800">
       <div className="max-w-2xl mx-auto">
         {!finished ? (
           <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
@@ -142,10 +142,10 @@ export const QuizApp: React.FC = () => {
                 {currentIndex > 0 ? (
                    <button 
                     onClick={handleBack} 
-                    className="flex items-center gap-1 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2"
+                    className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2"
                    >
                     <span className="text-lg">←</span> 
-                    <span className="font-medium">BACK</span>
+                    <span className="font-medium">BACK / 上一题</span>
                   </button>
                 ) : <span className="text-[10px] tracking-widest text-stone-300">DNA RESEARCH</span>}
                 <span className="text-[10px] tracking-widest text-stone-300">{currentIndex + 1} / 20</span>
@@ -160,44 +160,44 @@ export const QuizApp: React.FC = () => {
              </div>
           </div>
         ) : (
-          <div className="bg-white rounded-[40px] p-10 shadow-xl text-center">
-            <div className="mb-8">
-              <p className="text-[10px] tracking-[0.3em] text-stone-300 uppercase mb-2">My Aesthetic DNA is</p>
-              <h2 className="text-3xl font-serif mb-2">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
+          <div className="bg-white rounded-[40px] p-8 shadow-xl text-center">
+            {/* 紧凑型头部 */}
+            <div className="mb-6">
+              <p className="text-[10px] tracking-[0.3em] text-stone-300 uppercase mb-1">My Aesthetic DNA</p>
+              <h2 className="text-3xl font-serif mb-1">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
               <p style={{ color: THEME.accent }} className="text-xs tracking-widest">{BRAND_MAP[finalAnalysis!.top].title}</p>
             </div>
 
-            <div className="h-[1px] w-12 bg-stone-100 mx-auto mb-10" />
-
-            <div className="mb-10 overflow-hidden rounded-xl bg-stone-50 aspect-[4/5] max-w-[240px] mx-auto border-[0.5px] border-stone-100 p-2 shadow-inner">
-               <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover rounded-lg" alt="Result" />
+            {/* 结果主展示区：改用 Flex 布局缩短长度 */}
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-8 text-left md:text-left bg-stone-50/50 p-6 rounded-3xl border border-stone-50">
+               <div className="w-full md:w-1/3 aspect-[4/5] overflow-hidden rounded-2xl shadow-sm">
+                  <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover" alt="Result" />
+               </div>
+               <div className="w-full md:w-2/3">
+                  <h3 className="text-2xl font-serif tracking-widest mb-3 text-black uppercase">{BRAND_MAP[finalAnalysis!.top].name}</h3>
+                  <p className="text-stone-500 leading-6 text-sm italic">
+                    {BRAND_MAP[finalAnalysis!.top].desc}
+                  </p>
+               </div>
             </div>
 
-            <h3 className="text-4xl font-serif tracking-[0.15em] mb-6 text-black uppercase break-words px-2">
-              {BRAND_MAP[finalAnalysis!.top].name}
-            </h3>
-
-            <div className="max-w-md mx-auto mb-12">
-              <p className="text-stone-500 leading-8 text-sm text-justify px-4 border-l border-r border-stone-50">
-                {BRAND_MAP[finalAnalysis!.top].desc}
-              </p>
-            </div>
-
-            <div className="space-y-4 mb-16 max-w-xs mx-auto opacity-60">
+            {/* 维度分析区：字体加深加大，颜色明显 */}
+            <div className="grid grid-cols-1 gap-3 mb-10 max-w-sm mx-auto">
+               <p className="text-[10px] tracking-[0.2em] text-stone-400 uppercase text-center mb-2">Detailed Analysis</p>
                {finalAnalysis?.percents.map(p => (
-                 <div key={p.key} className="flex justify-between items-center text-[9px] uppercase tracking-widest">
-                   <span className="text-stone-400 w-20 text-left">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
-                   <div className="flex-1 mx-4 h-[1px] bg-stone-50 relative">
-                     <div className="absolute top-0 left-0 h-full bg-stone-200 transition-all duration-1000" style={{ width: `${p.val}%` }} />
+                 <div key={p.key} className="flex justify-between items-center group">
+                   <span className="text-stone-700 font-bold text-xs w-20 text-left tracking-wider">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
+                   <div className="flex-1 mx-4 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                     <div className="h-full bg-stone-800 transition-all duration-1000 ease-out" style={{ width: `${p.val}%` }} />
                    </div>
-                   <span className="text-stone-300 w-8 text-right">{p.val}%</span>
+                   <span className="text-stone-800 font-serif text-sm w-10 text-right">{p.val}%</span>
                  </div>
                ))}
             </div>
 
             <button 
               onClick={() => window.location.reload()} 
-              className="mt-8 px-8 py-3 rounded-full border border-stone-100 text-xs text-stone-400 hover:text-stone-800 hover:border-stone-300 transition-all uppercase tracking-[0.3em] font-medium"
+              className="px-10 py-3 rounded-full border border-stone-200 text-xs text-stone-500 hover:text-stone-900 hover:border-stone-800 transition-all uppercase tracking-[0.3em] font-bold"
             >
               Restart / 再测一次
             </button>
