@@ -31,7 +31,7 @@ const QUESTIONS = [
   { id: 8, title: "旅行选地，你先看？", options: [{ label: "城市历史街区", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "展览/音乐节", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "人少景色干净", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "豪华酒店度假村", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 9, title: "逛完商场，你最容易？", options: [{ label: "被品质打动", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "被设计惊到", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "被舒适感拿捏", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "被“看起来很贵”吸走", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 10, title: "如果你是一句形容词？", options: [{ label: "稳，拎得清", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "怪，有点厉害", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "冷，但很高级", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "亮，很有存在感", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
-  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, base: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
+  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 12, title: "艺术品收藏，你更偏好？", options: [{ label: "经典大师版画、古董家具", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "当代先锋装置、实验影像", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简雕塑、单色调画作", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "巴洛克/洛可可风格、水晶雕塑", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 13, title: "选择度假目的地，你偏向？", options: [{ label: "巴黎、佛罗伦萨等老牌城市", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "柏林、东京等先锋艺术区", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "北欧、新西兰等人少自然风光", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "摩纳哥、迪拜等奢华度假地", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 14, title: "收到一份神秘礼物，你希望是？", options: [{ label: "Birkin/Kelly 级经典手袋", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "联名限量/设计师签名款", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "Cashmere 羊绒围巾/针织", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "钻石首饰/镶钻腕表", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -138,11 +138,17 @@ export const QuizApp: React.FC = () => {
       <div className="max-w-2xl mx-auto">
         {!finished ? (
           <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
-             <div className="flex justify-between items-center mb-12 text-[10px] tracking-widest text-stone-300 uppercase">
+             <div className="flex justify-between items-center mb-12 uppercase">
                 {currentIndex > 0 ? (
-                   <button onClick={handleBack} className="hover:text-stone-500 transition-colors">← Back</button>
-                ) : <span>DNA Research</span>}
-                <span>{currentIndex + 1} / 20</span>
+                   <button 
+                    onClick={handleBack} 
+                    className="flex items-center gap-1 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2"
+                   >
+                    <span className="text-lg">←</span> 
+                    <span className="font-medium">BACK</span>
+                  </button>
+                ) : <span className="text-[10px] tracking-widest text-stone-300">DNA RESEARCH</span>}
+                <span className="text-[10px] tracking-widest text-stone-300">{currentIndex + 1} / 20</span>
              </div>
              <h2 className="text-2xl font-light mb-12 leading-snug">{QUESTIONS[currentIndex]?.title}</h2>
              <div className="grid gap-4">
@@ -163,17 +169,14 @@ export const QuizApp: React.FC = () => {
 
             <div className="h-[1px] w-12 bg-stone-100 mx-auto mb-10" />
 
-            {/* 结果图片区：调小比例 */}
             <div className="mb-10 overflow-hidden rounded-xl bg-stone-50 aspect-[4/5] max-w-[240px] mx-auto border-[0.5px] border-stone-100 p-2 shadow-inner">
                <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover rounded-lg" alt="Result" />
             </div>
 
-            {/* 品牌名称区：极大化 */}
             <h3 className="text-4xl font-serif tracking-[0.15em] mb-6 text-black uppercase break-words px-2">
               {BRAND_MAP[finalAnalysis!.top].name}
             </h3>
 
-            {/* 深度判词区 */}
             <div className="max-w-md mx-auto mb-12">
               <p className="text-stone-500 leading-8 text-sm text-justify px-4 border-l border-r border-stone-50">
                 {BRAND_MAP[finalAnalysis!.top].desc}
@@ -192,7 +195,12 @@ export const QuizApp: React.FC = () => {
                ))}
             </div>
 
-            <button onClick={() => window.location.reload()} className="text-[10px] text-stone-200 hover:text-stone-400 transition-colors underline uppercase tracking-[0.2em]">Retest / Restart</button>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-8 px-8 py-3 rounded-full border border-stone-100 text-xs text-stone-400 hover:text-stone-800 hover:border-stone-300 transition-all uppercase tracking-[0.3em] font-medium"
+            >
+              Restart / 再测一次
+            </button>
           </div>
         )}
       </div>
