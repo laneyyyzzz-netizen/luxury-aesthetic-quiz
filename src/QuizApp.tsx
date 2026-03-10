@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 const ACCESS_CODE = "202688"; 
 const THEME = { 
@@ -7,6 +7,14 @@ const THEME = {
   primary: "#81D8D0", 
   accent: "#B89B72", 
   text: "#1C1C1C" 
+};
+
+// 预加载图片的函数：让图片在用户做题时偷偷下载好
+const preloadImages = (urls: string[]) => {
+  urls.forEach(url => {
+    const img = new Image();
+    img.src = url;
+  });
 };
 
 const DIMENSIONS = ["classic", "avantGarde", "minimal", "opulent", "lowKey"] as const;
@@ -51,6 +59,14 @@ export const QuizApp: React.FC = () => {
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // 优化点：当用户输入正确码时，立刻开始预加载所有可能的品牌图片
+  useEffect(() => {
+    if (isUnlocked) {
+      const allImages = ["/hermes.jpg", "/balenciaga.jpg", "/celine.jpg", "/versace.jpg", "/loropiano.jpg"];
+      preloadImages(allImages);
+    }
+  }, [isUnlocked]);
+
   const handleUnlock = () => {
     if (inputCode.trim() === ACCESS_CODE) setIsUnlocked(true);
     else alert("邀请码无效");
@@ -64,7 +80,8 @@ export const QuizApp: React.FC = () => {
       setCurrentIndex(prev => prev + 1);
     } else { 
       setLoading(true); 
-      setTimeout(() => { setLoading(false); setFinished(true); }, 2000); 
+      // 这里的 1500ms 也是为了给最后一张图的渲染留一点缓冲时间
+      setTimeout(() => { setLoading(false); setFinished(true); }, 1500); 
     }
   };
 
@@ -87,36 +104,11 @@ export const QuizApp: React.FC = () => {
   }, [finished, answers]);
 
   const BRAND_MAP: Record<DimensionKey, any> = {
-    classic: { 
-      name: "CHANEL / HERMÈS", 
-      image: "/hermes.jpg", 
-      title: "时尚先锋｜自律的自由",
-      desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。你穿衣不是为了让别人看，而是为了建立起保护主体性的铠甲。请继续保持这份傲骨，因为在这个满是‘副本’的世界里，你的独立就是最顶级的奢侈品。" 
-    },
-    avantGarde: { 
-      name: "BALENCIAGA / GUCCI", 
-      image: "/balenciaga.jpg", 
-      title: "艺术先锋｜打破边界的灵魂",
-      desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆——生活是你的画布，而你从不画地为牢。你值得拥有那些最具创造力的表达，因为你本身就是艺术。" 
-    },
-    minimal: { 
-      name: "CELINE", 
-      image: "/celine.jpg", 
-      title: "极简主义｜内敛的张力",
-      desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。这种‘松弛感’背后，是极大的自信与底气。你不需要 Logo 来证明自己，因为你的主体性已经足够强大。这种不费力的时髦，是你最高级的体面。" 
-    },
-    opulent: { 
-      name: "VERSACE", 
-      image: "/versace.jpg", 
-      title: "华丽美学｜生命就要肆意闪耀",
-      desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。测出这个结果的你，注定是人群中的视觉重心，请大胆地发光，因为你值得这世间所有的绚烂。" 
-    },
-    lowKey: { 
-      name: "LORO PIANA", 
-      image: "/loropiano.jpg", 
-      title: "老钱风｜无需言说的底气",
-      desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌，更在意物质背后的时间沉淀。这种高智感的显贵，源于你对生活品质毫不妥协的掌控。你值得穿最好的，因为你本身就处于金字塔尖。" 
-    }
+    classic: { name: "CHANEL / HERMÈS", image: "/hermes.jpg", title: "时尚先锋｜自律的自由", desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。" },
+    avantGarde: { name: "BALENCIAGA / GUCCI", image: "/balenciaga.jpg", title: "艺术先锋｜打破边界的灵魂", desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆。" },
+    minimal: { name: "CELINE", image: "/celine.jpg", title: "极简主义｜内敛的张力", desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。" },
+    opulent: { name: "VERSACE", image: "/versace.jpg", title: "华丽美学｜生命就要肆意闪耀", desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。" },
+    lowKey: { name: "LORO PIANA", image: "/loropiano.jpg", title: "老钱风｜无需言说的底气", desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌。" }
   };
 
   if (!isUnlocked) {
@@ -134,71 +126,61 @@ export const QuizApp: React.FC = () => {
   if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif">正在生成你的审美画像...</div>;
 
   return (
-    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-6 px-4 font-sans leading-relaxed text-stone-800">
+    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-4 px-4 font-sans leading-relaxed text-stone-800">
       <div className="max-w-2xl mx-auto">
         {!finished ? (
           <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
-             <div className="flex justify-between items-center mb-12 uppercase">
+             <div className="flex justify-between items-center mb-10 uppercase">
                 {currentIndex > 0 ? (
-                   <button 
-                    onClick={handleBack} 
-                    className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2"
-                   >
-                    <span className="text-lg">←</span> 
-                    <span className="font-medium">BACK / 上一题</span>
+                   <button onClick={handleBack} className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2">
+                    <span className="text-lg">←</span> <span className="font-medium text-[12px]">BACK / 上一题</span>
                   </button>
                 ) : <span className="text-[10px] tracking-widest text-stone-300">DNA RESEARCH</span>}
                 <span className="text-[10px] tracking-widest text-stone-300">{currentIndex + 1} / 20</span>
              </div>
-             <h2 className="text-2xl font-light mb-12 leading-snug">{QUESTIONS[currentIndex]?.title}</h2>
-             <div className="grid gap-4">
+             <h2 className="text-2xl font-light mb-8 leading-snug">{QUESTIONS[currentIndex]?.title}</h2>
+             <div className="grid gap-3">
                {QUESTIONS[currentIndex]?.options.map((opt, idx) => (
-                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-6 rounded-2xl border border-stone-50 hover:bg-stone-50 transition-all hover:border-stone-200 text-stone-500 active:scale-[0.98]">
+                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-5 rounded-2xl border border-stone-50 hover:bg-stone-50 transition-all hover:border-stone-200 text-stone-500 active:scale-[0.98] text-sm">
                    {opt.label}
                  </button>
                ))}
              </div>
           </div>
         ) : (
-          <div className="bg-white rounded-[40px] p-8 shadow-xl text-center">
-            {/* 紧凑型头部 */}
-            <div className="mb-6">
+          <div className="bg-white rounded-[40px] p-6 shadow-xl text-center">
+            <div className="mb-4">
               <p className="text-[10px] tracking-[0.3em] text-stone-300 uppercase mb-1">My Aesthetic DNA</p>
               <h2 className="text-3xl font-serif mb-1">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
               <p style={{ color: THEME.accent }} className="text-xs tracking-widest">{BRAND_MAP[finalAnalysis!.top].title}</p>
             </div>
 
-            {/* 结果主展示区：改用 Flex 布局缩短长度 */}
-            <div className="flex flex-col md:flex-row items-center gap-6 mb-8 text-left md:text-left bg-stone-50/50 p-6 rounded-3xl border border-stone-50">
-               <div className="w-full md:w-1/3 aspect-[4/5] overflow-hidden rounded-2xl shadow-sm">
+            <div className="flex flex-col md:flex-row items-center gap-4 mb-6 bg-stone-50/50 p-4 rounded-3xl border border-stone-50">
+               <div className="w-full md:w-2/5 aspect-[4/5] overflow-hidden rounded-2xl shadow-sm">
                   <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover" alt="Result" />
                </div>
-               <div className="w-full md:w-2/3">
-                  <h3 className="text-2xl font-serif tracking-widest mb-3 text-black uppercase">{BRAND_MAP[finalAnalysis!.top].name}</h3>
-                  <p className="text-stone-500 leading-6 text-sm italic">
+               <div className="w-full md:w-3/5 text-left">
+                  <h3 className="text-xl font-serif tracking-widest mb-2 text-black uppercase">{BRAND_MAP[finalAnalysis!.top].name}</h3>
+                  <p className="text-stone-500 leading-5 text-[13px] italic line-clamp-6">
                     {BRAND_MAP[finalAnalysis!.top].desc}
                   </p>
                </div>
             </div>
 
-            {/* 维度分析区：字体加深加大，颜色明显 */}
-            <div className="grid grid-cols-1 gap-3 mb-10 max-w-sm mx-auto">
-               <p className="text-[10px] tracking-[0.2em] text-stone-400 uppercase text-center mb-2">Detailed Analysis</p>
+            <div className="grid grid-cols-1 gap-2 mb-6 max-w-sm mx-auto">
+               <p className="text-[9px] tracking-[0.2em] text-stone-400 uppercase text-center mb-1">Analysis Results</p>
                {finalAnalysis?.percents.map(p => (
-                 <div key={p.key} className="flex justify-between items-center group">
-                   <span className="text-stone-700 font-bold text-xs w-20 text-left tracking-wider">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
-                   <div className="flex-1 mx-4 h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-stone-800 transition-all duration-1000 ease-out" style={{ width: `${p.val}%` }} />
+                 <div key={p.key} className="flex justify-between items-center px-2">
+                   <span className="text-stone-800 font-bold text-[11px] w-20 text-left tracking-wider uppercase">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
+                   <div className="flex-1 mx-3 h-1 bg-stone-100 rounded-full overflow-hidden">
+                     <div className="h-full bg-black transition-all duration-1000 ease-out" style={{ width: `${p.val}%` }} />
                    </div>
-                   <span className="text-stone-800 font-serif text-sm w-10 text-right">{p.val}%</span>
+                   <span className="text-stone-900 font-serif text-xs w-8 text-right font-bold">{p.val}%</span>
                  </div>
                ))}
             </div>
 
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-10 py-3 rounded-full border border-stone-200 text-xs text-stone-500 hover:text-stone-900 hover:border-stone-800 transition-all uppercase tracking-[0.3em] font-bold"
-            >
+            <button onClick={() => window.location.reload()} className="px-10 py-3 rounded-full border border-stone-200 text-[11px] text-stone-600 hover:text-black hover:border-black transition-all uppercase tracking-[0.3em] font-bold">
               Restart / 再测一次
             </button>
           </div>
