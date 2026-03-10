@@ -1,12 +1,23 @@
 import React, { useState, useMemo } from "react";
 
 const ACCESS_CODE = "202688"; 
-const THEME = { bg: "#F9F9F7", card: "#FFFFFF", primary: "#81D8D0", accent: "#B89B72", text: "#1C1C1C" };
+const THEME = { 
+  bg: "#F9F9F7", 
+  card: "#FFFFFF", 
+  primary: "#81D8D0", 
+  accent: "#B89B72", 
+  text: "#1C1C1C" 
+};
 
 const DIMENSIONS = ["classic", "avantGarde", "minimal", "opulent", "lowKey"] as const;
 type DimensionKey = (typeof DIMENSIONS)[number];
+
 const DIMENSION_LABELS: Record<DimensionKey, string> = {
-  classic: "经典显贵", avantGarde: "先锋个性", minimal: "极简冷淡", opulent: "高调华丽", lowKey: "老钱风"
+  classic: "先锋显贵", 
+  avantGarde: "先锋个性", 
+  minimal: "极简主义", 
+  opulent: "华丽美学", 
+  lowKey: "老钱风"
 };
 
 const QUESTIONS = [
@@ -20,7 +31,7 @@ const QUESTIONS = [
   { id: 8, title: "旅行选地，你先看？", options: [{ label: "城市历史街区", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "展览/音乐节", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "人少景色干净", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "豪华酒店度假村", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 9, title: "逛完商场，你最容易？", options: [{ label: "被品质打动", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "被设计惊到", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "被舒适感拿捏", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "被“看起来很贵”吸走", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 10, title: "如果你是一句形容词？", options: [{ label: "稳，拎得清", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "怪，有点厉害", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "冷，但很高级", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "亮，很有存在感", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
-  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
+  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, base: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 12, title: "艺术品收藏，你更偏好？", options: [{ label: "经典大师版画、古董家具", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "当代先锋装置、实验影像", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简雕塑、单色调画作", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "巴洛克/洛可可风格、水晶雕塑", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 13, title: "选择度假目的地，你偏向？", options: [{ label: "巴黎、佛罗伦萨等老牌城市", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "柏林、东京等先锋艺术区", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "北欧、新西兰等人少自然风光", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "摩纳哥、迪拜等奢华度假地", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 14, title: "收到一份神秘礼物，你希望是？", options: [{ label: "Birkin/Kelly 级经典手袋", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "联名限量/设计师签名款", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "Cashmere 羊绒围巾/针织", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "钻石首饰/镶钻腕表", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -49,8 +60,18 @@ export const QuizApp: React.FC = () => {
     const nextAnswers = [...answers];
     nextAnswers[currentIndex] = idx;
     setAnswers(nextAnswers);
-    if (currentIndex < QUESTIONS.length - 1) setCurrentIndex(prev => prev + 1);
-    else { setLoading(true); setTimeout(() => { setLoading(false); setFinished(true); }, 2000); }
+    if (currentIndex < QUESTIONS.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else { 
+      setLoading(true); 
+      setTimeout(() => { setLoading(false); setFinished(true); }, 2000); 
+    }
+  };
+
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+    }
   };
 
   const finalAnalysis = useMemo(() => {
@@ -58,7 +79,7 @@ export const QuizApp: React.FC = () => {
     const scores: Record<DimensionKey, number> = { classic: 0, avantGarde: 0, minimal: 0, opulent: 0, lowKey: 0 };
     answers.forEach((ansIdx, qIdx) => {
       const opt = QUESTIONS[qIdx]?.options[ansIdx];
-      if (opt) (Object.keys(opt.scores) as DimensionKey[]).forEach(k => scores[k] += opt.scores[k]);
+      if (opt) (Object.keys(opt.scores) as DimensionKey[]).forEach(k => scores[k] += (opt.scores as any)[k]);
     });
     const total = Object.values(scores).reduce((a, b) => a + b, 0);
     const top = (Object.keys(scores) as DimensionKey[]).reduce((a, b) => scores[a] > scores[b] ? a : b);
@@ -66,40 +87,67 @@ export const QuizApp: React.FC = () => {
   }, [finished, answers]);
 
   const BRAND_MAP: Record<DimensionKey, any> = {
-    classic: { name: "Hermès / Chanel", image: "/hermes.jpg", desc: "追求极致工艺与跨越时间的经典，你是秩序与质感的守护者。" },
-    avantGarde: { name: "Balenciaga / Gucci", image: "/balenciaga.jpg", desc: "拒绝平庸，打破常规，你的审美是先锋艺术的实验场。" },
-    minimal: { name: "Celine", image: "/celine.jpg", desc: "极致的减法是最高级的加法，你在冷静中寻觅力量。" },
-    opulent: { name: "Versace", image: "/versace.jpg", desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。" },
-    lowKey: { name: "Loro Piana / Brunello Cucinelli", image: "/loropiano.jpg", desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。" }
+    classic: { 
+      name: "CHANEL / HERMÈS", 
+      image: "/hermes.jpg", 
+      title: "时尚先锋｜自律的自由",
+      desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。你穿衣不是为了让别人看，而是为了建立起保护主体性的铠甲。请继续保持这份傲骨，因为在这个满是‘副本’的世界里，你的独立就是最顶级的奢侈品。" 
+    },
+    avantGarde: { 
+      name: "BALENCIAGA / GUCCI", 
+      image: "/balenciaga.jpg", 
+      title: "艺术先锋｜打破边界的灵魂",
+      desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆——生活是你的画布，而你从不画地为牢。你值得拥有那些最具创造力的表达，因为你本身就是艺术。" 
+    },
+    minimal: { 
+      name: "CELINE", 
+      image: "/celine.jpg", 
+      title: "极简主义｜内敛的张力",
+      desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。这种‘松弛感’背后，是极大的自信与底气。你不需要 Logo 来证明自己，因为你的主体性已经足够强大。这种不费力的时髦，是你最高级的体面。" 
+    },
+    opulent: { 
+      name: "VERSACE", 
+      image: "/versace.jpg", 
+      title: "华丽美学｜生命就要肆意闪耀",
+      desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。测出这个结果的你，注定是人群中的视觉重心，请大胆地发光，因为你值得这世间所有的绚烂。" 
+    },
+    lowKey: { 
+      name: "LORO PIANA", 
+      image: "/loropiano.jpg", 
+      title: "老钱风｜无需言说的底气",
+      desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌，更在意物质背后的时间沉淀。这种高智感的显贵，源于你对生活品质毫不妥协的掌控。你值得穿最好的，因为你本身就处于金字塔尖。" 
+    }
   };
 
   if (!isUnlocked) {
     return (
-      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex items-center justify-center p-6">
+      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex items-center justify-center p-6 text-stone-800">
         <div className="max-w-sm w-full p-10 bg-white rounded-[40px] shadow-xl text-center">
-          <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-[0.2em] mb-8">AESTHETIC DNA</h1>
-          <input type="text" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none text-black" />
-          <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm">开启测试</button>
+          <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-[0.2em] mb-8 uppercase">Aesthetic DNA</h1>
+          <input type="text" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none placeholder:text-stone-200" />
+          <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm active:scale-95 transition-transform">开启测试</button>
         </div>
       </div>
     );
   }
 
-  if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse">正在生成你的审美画像...</div>;
+  if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif">正在生成你的审美画像...</div>;
 
   return (
-    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-10 px-4 font-sans leading-relaxed">
+    <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-10 px-4 font-sans leading-relaxed text-stone-800">
       <div className="max-w-2xl mx-auto">
         {!finished ? (
-          <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm">
+          <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
              <div className="flex justify-between items-center mb-12 text-[10px] tracking-widest text-stone-300 uppercase">
-                <span>DNA Research</span>
+                {currentIndex > 0 ? (
+                   <button onClick={handleBack} className="hover:text-stone-500 transition-colors">← Back</button>
+                ) : <span>DNA Research</span>}
                 <span>{currentIndex + 1} / 20</span>
              </div>
              <h2 className="text-2xl font-light mb-12 leading-snug">{QUESTIONS[currentIndex]?.title}</h2>
              <div className="grid gap-4">
                {QUESTIONS[currentIndex]?.options.map((opt, idx) => (
-                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-6 rounded-2xl border border-stone-50 hover:bg-stone-50 transition-colors text-stone-500">
+                 <button key={idx} onClick={() => handleSelect(idx)} className="w-full text-left p-6 rounded-2xl border border-stone-50 hover:bg-stone-50 transition-all hover:border-stone-200 text-stone-500 active:scale-[0.98]">
                    {opt.label}
                  </button>
                ))}
@@ -107,30 +155,44 @@ export const QuizApp: React.FC = () => {
           </div>
         ) : (
           <div className="bg-white rounded-[40px] p-10 shadow-xl text-center">
-            <h2 className="text-3xl font-serif mb-2">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
-            <div className="h-[1px] w-12 bg-stone-200 mx-auto mb-10" />
-
-            {/* 品牌海报图片 */}
-            <div className="mb-8 overflow-hidden rounded-2xl bg-stone-50 aspect-[3/4] max-w-xs mx-auto">
-               <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover" alt="Result" />
+            <div className="mb-8">
+              <p className="text-[10px] tracking-[0.3em] text-stone-300 uppercase mb-2">My Aesthetic DNA is</p>
+              <h2 className="text-3xl font-serif mb-2">{DIMENSION_LABELS[finalAnalysis!.top]}</h2>
+              <p style={{ color: THEME.accent }} className="text-xs tracking-widest">{BRAND_MAP[finalAnalysis!.top].title}</p>
             </div>
 
-            <div className="space-y-3 mb-12 max-w-xs mx-auto">
+            <div className="h-[1px] w-12 bg-stone-100 mx-auto mb-10" />
+
+            {/* 结果图片区：调小比例 */}
+            <div className="mb-10 overflow-hidden rounded-xl bg-stone-50 aspect-[4/5] max-w-[240px] mx-auto border-[0.5px] border-stone-100 p-2 shadow-inner">
+               <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover rounded-lg" alt="Result" />
+            </div>
+
+            {/* 品牌名称区：极大化 */}
+            <h3 className="text-4xl font-serif tracking-[0.15em] mb-6 text-black uppercase break-words px-2">
+              {BRAND_MAP[finalAnalysis!.top].name}
+            </h3>
+
+            {/* 深度判词区 */}
+            <div className="max-w-md mx-auto mb-12">
+              <p className="text-stone-500 leading-8 text-sm text-justify px-4 border-l border-r border-stone-50">
+                {BRAND_MAP[finalAnalysis!.top].desc}
+              </p>
+            </div>
+
+            <div className="space-y-4 mb-16 max-w-xs mx-auto opacity-60">
                {finalAnalysis?.percents.map(p => (
-                 <div key={p.key} className="flex justify-between items-center text-[10px] uppercase tracking-tighter">
-                   <span className="text-stone-400">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
+                 <div key={p.key} className="flex justify-between items-center text-[9px] uppercase tracking-widest">
+                   <span className="text-stone-400 w-20 text-left">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
                    <div className="flex-1 mx-4 h-[1px] bg-stone-50 relative">
-                     <div className="absolute top-0 left-0 h-full bg-stone-300" style={{ width: `${p.val}%` }} />
+                     <div className="absolute top-0 left-0 h-full bg-stone-200 transition-all duration-1000" style={{ width: `${p.val}%` }} />
                    </div>
-                   <span className="text-stone-300">{p.val}%</span>
+                   <span className="text-stone-300 w-8 text-right">{p.val}%</span>
                  </div>
                ))}
             </div>
 
-            <p className="text-stone-500 italic font-serif mb-8 text-sm px-4">"{BRAND_MAP[finalAnalysis!.top].desc}"</p>
-            <p className="text-lg font-light mb-12" style={{ color: THEME.accent }}>{BRAND_MAP[finalAnalysis!.top].name}</p>
-
-            <button onClick={() => window.location.reload()} className="text-[10px] text-stone-200 underline uppercase tracking-widest">Restart</button>
+            <button onClick={() => window.location.reload()} className="text-[10px] text-stone-200 hover:text-stone-400 transition-colors underline uppercase tracking-[0.2em]">Retest / Restart</button>
           </div>
         )}
       </div>
