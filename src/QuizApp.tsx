@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 
-const ACCESS_CODE = "202688"; 
+// 定义主题颜色
 const THEME = { 
   bg: "#F9F9F7", 
   card: "#FFFFFF", 
@@ -9,13 +9,14 @@ const THEME = {
   text: "#1C1C1C" 
 };
 
-// 预加载函数：在用户做题时偷偷下载结果图片
-const preloadImages = (urls: string[]) => {
-  urls.forEach(url => {
-    const img = new Image();
-    img.src = url;
-  });
-};
+// 预加载所有结果图，带上版本号防止缓存
+const IMAGE_URLS = [
+  "/hermes.jpg?v=3", 
+  "/balenciaga.jpg?v=3", 
+  "/celine.jpg?v=3", 
+  "/versace.jpg?v=3", 
+  "/loropiano.jpg?v=3"
+];
 
 const DIMENSIONS = ["classic", "avantGarde", "minimal", "opulent", "lowKey"] as const;
 type DimensionKey = (typeof DIMENSIONS)[number];
@@ -28,6 +29,7 @@ const DIMENSION_LABELS: Record<DimensionKey, string> = {
   lowKey: "老钱风"
 };
 
+// 完整的 20 道题目
 const QUESTIONS = [
   { id: 1, title: "玩手机时，你最常…", options: [{ label: "刷理财/新闻", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "看潮流/街拍", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "清理桌面/收纳", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "刷派对/度假 vlog", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 2, title: "出门约会，你第一反应？", options: [{ label: "穿好外套包包", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "造型要有记忆点", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "要舒服好活动", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "气场先拉满", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -52,24 +54,18 @@ const QUESTIONS = [
 ];
 
 export const QuizApp: React.FC = () => {
-  const [inputCode, setInputCode] = useState("");
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // 预加载逻辑：在解锁成功后立即下载所有结果图
+  // 核心优化：一打开网页就静默预加载所有结果大图
   useEffect(() => {
-    if (isUnlocked) {
-      preloadImages(["/hermes.jpg", "/balenciaga.jpg", "/celine.jpg", "/versace.jpg", "/loropiano.jpg"]);
-    }
-  }, [isUnlocked]);
-
-  const handleUnlock = () => {
-    if (inputCode.trim() === ACCESS_CODE) setIsUnlocked(true);
-    else alert("邀请码无效");
-  };
+    IMAGE_URLS.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, []);
 
   const handleSelect = (idx: number) => {
     const nextAnswers = [...answers];
@@ -79,7 +75,8 @@ export const QuizApp: React.FC = () => {
       setCurrentIndex(prev => prev + 1);
     } else { 
       setLoading(true); 
-      setTimeout(() => { setLoading(false); setFinished(true); }, 1500); 
+      // 稍微缩短一点等待时间，体感更爽
+      setTimeout(() => { setLoading(false); setFinished(true); }, 1200); 
     }
   };
 
@@ -96,26 +93,14 @@ export const QuizApp: React.FC = () => {
   }, [finished, answers]);
 
   const BRAND_MAP: Record<DimensionKey, any> = {
-    classic: { name: "CHANEL / HERMÈS", image: "/hermes.jpg", title: "时尚先锋｜自律的自由", desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。" },
-    avantGarde: { name: "BALENCIAGA / GUCCI", image: "/balenciaga.jpg", title: "艺术先锋｜打破边界的灵魂", desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆。" },
-    minimal: { name: "CELINE", image: "/celine.jpg", title: "极简主义｜内敛的张力", desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。" },
-    opulent: { name: "VERSACE", image: "/versace.jpg", title: "华丽美学｜生命就要肆意闪耀", desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。" },
-    lowKey: { name: "LORO PIANA", image: "/loropiano.jpg", title: "老钱风｜无需言说的底气", desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌。" }
+    classic: { name: "CHANEL / HERMÈS", image: "/hermes.jpg?v=3", title: "时尚先锋｜自律的自由", desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。" },
+    avantGarde: { name: "BALENCIAGA / GUCCI", image: "/balenciaga.jpg?v=3", title: "艺术先锋｜打破边界的灵魂", desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆。" },
+    minimal: { name: "CELINE", image: "/celine.jpg?v=3", title: "极简主义｜内敛的张力", desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。" },
+    opulent: { name: "VERSACE", image: "/versace.jpg?v=3", title: "华丽美学｜生命就要肆意闪耀", desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。" },
+    lowKey: { name: "LORO PIANA", image: "/loropiano.jpg?v=3", title: "老钱风｜无需言说的底气", desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌。" }
   };
 
-  if (!isUnlocked) {
-    return (
-      <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex items-center justify-center p-6 text-stone-800">
-        <div className="max-w-sm w-full p-10 bg-white rounded-[40px] shadow-xl text-center">
-          <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-[0.2em] mb-8 uppercase">Aesthetic DNA</h1>
-          <input type="password" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none placeholder:text-stone-200" />
-          <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm active:scale-95 transition-transform">开启测试</button>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif">正在生成你的审美画像...</div>;
+  if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif uppercase tracking-widest">DNA Analyzing...</div>;
 
   return (
     <div style={{ backgroundColor: THEME.bg, color: THEME.text }} className="min-h-screen py-4 px-4 font-sans leading-relaxed text-stone-800">
@@ -124,10 +109,10 @@ export const QuizApp: React.FC = () => {
           <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
              <div className="flex justify-between items-center mb-10 uppercase">
                 {currentIndex > 0 ? (
-                   <button onClick={() => setCurrentIndex(prev => prev - 1)} className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2">
-                    <span className="text-lg">←</span> <span className="font-medium text-[12px]">BACK / 上一题</span>
+                   <button onClick={() => setCurrentIndex(prev => prev - 1)} className="flex items-center gap-2 text-stone-400 hover:text-stone-800 transition-colors py-2">
+                    <span className="text-lg">←</span> <span className="font-medium text-[10px] tracking-widest">BACK</span>
                   </button>
-                ) : <span className="text-[10px] tracking-widest text-stone-300">DNA RESEARCH</span>}
+                ) : <span className="text-[10px] tracking-widest text-stone-300">ESTHETIC LAB</span>}
                 <span className="text-[10px] tracking-widest text-stone-300">{currentIndex + 1} / 20</span>
              </div>
              <h2 className="text-2xl font-light mb-8 leading-snug">{QUESTIONS[currentIndex]?.title}</h2>
