@@ -9,7 +9,7 @@ const THEME = {
   text: "#1C1C1C" 
 };
 
-// 预加载图片的函数：让图片在用户做题时偷偷下载好
+// 预加载函数：在用户做题时偷偷下载结果图片
 const preloadImages = (urls: string[]) => {
   urls.forEach(url => {
     const img = new Image();
@@ -39,7 +39,7 @@ const QUESTIONS = [
   { id: 8, title: "旅行选地，你先看？", options: [{ label: "城市历史街区", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "展览/音乐节", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "人少景色干净", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "豪华酒店度假村", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 9, title: "逛完商场，你最容易？", options: [{ label: "被品质打动", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "被设计惊到", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "被舒适感拿捏", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "被“看起来很贵”吸走", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 10, title: "如果你是一句形容词？", options: [{ label: "稳，拎得清", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 0, lowKey: 2 } }, { label: "怪，有点厉害", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "冷，但很高级", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "亮，很有存在感", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
-  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, base: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
+  { id: 11, title: "私人晚宴，你会穿？", options: [{ label: "剪裁精良的定制西装/小黑裙", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "设计感强的解构礼服", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简丝质长裙/羊绒套装", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "闪片/丝绒/夸张配饰", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 12, title: "艺术品收藏，你更偏好？", options: [{ label: "经典大师版画、古董家具", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "当代先锋装置、实验影像", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "极简雕塑、单色调画作", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 2 } }, { label: "巴洛克/洛可可风格、水晶雕塑", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 13, title: "选择度假目的地，你偏向？", options: [{ label: "巴黎、佛罗伦萨等老牌城市", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "柏林、东京等先锋艺术区", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "北欧、新西兰等人少自然风光", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "摩纳哥、迪拜等奢华度假地", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
   { id: 14, title: "收到一份神秘礼物，你希望是？", options: [{ label: "Birkin/Kelly 级经典手袋", scores: { classic: 3, avantGarde: 0, minimal: 1, opulent: 1, lowKey: 2 } }, { label: "联名限量/设计师签名款", scores: { classic: 0, avantGarde: 3, minimal: 0, opulent: 2, lowKey: 0 } }, { label: "Cashmere 羊绒围巾/针织", scores: { classic: 1, avantGarde: 0, minimal: 3, opulent: 0, lowKey: 3 } }, { label: "钻石首饰/镶钻腕表", scores: { classic: 0, avantGarde: 1, minimal: 0, opulent: 3, lowKey: 0 } }] },
@@ -59,11 +59,10 @@ export const QuizApp: React.FC = () => {
   const [finished, setFinished] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // 优化点：当用户输入正确码时，立刻开始预加载所有可能的品牌图片
+  // 预加载逻辑：在解锁成功后立即下载所有结果图
   useEffect(() => {
     if (isUnlocked) {
-      const allImages = ["/hermes.jpg", "/balenciaga.jpg", "/celine.jpg", "/versace.jpg", "/loropiano.jpg"];
-      preloadImages(allImages);
+      preloadImages(["/hermes.jpg", "/balenciaga.jpg", "/celine.jpg", "/versace.jpg", "/loropiano.jpg"]);
     }
   }, [isUnlocked]);
 
@@ -80,14 +79,7 @@ export const QuizApp: React.FC = () => {
       setCurrentIndex(prev => prev + 1);
     } else { 
       setLoading(true); 
-      // 这里的 1500ms 也是为了给最后一张图的渲染留一点缓冲时间
       setTimeout(() => { setLoading(false); setFinished(true); }, 1500); 
-    }
-  };
-
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
     }
   };
 
@@ -116,7 +108,7 @@ export const QuizApp: React.FC = () => {
       <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 z-50 flex items-center justify-center p-6 text-stone-800">
         <div className="max-w-sm w-full p-10 bg-white rounded-[40px] shadow-xl text-center">
           <h1 style={{ color: THEME.accent }} className="text-2xl font-serif tracking-[0.2em] mb-8 uppercase">Aesthetic DNA</h1>
-          <input type="text" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none placeholder:text-stone-200" />
+          <input type="password" placeholder="ENTER CODE" value={inputCode} onChange={(e) => setInputCode(e.target.value)} className="w-full text-center text-2xl border-b border-stone-100 py-3 mb-8 focus:outline-none placeholder:text-stone-200" />
           <button onClick={handleUnlock} style={{ backgroundColor: THEME.primary }} className="w-full py-4 rounded-full text-white font-medium tracking-widest text-sm active:scale-95 transition-transform">开启测试</button>
         </div>
       </div>
@@ -132,7 +124,7 @@ export const QuizApp: React.FC = () => {
           <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm relative">
              <div className="flex justify-between items-center mb-10 uppercase">
                 {currentIndex > 0 ? (
-                   <button onClick={handleBack} className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2">
+                   <button onClick={() => setCurrentIndex(prev => prev - 1)} className="flex items-center gap-2 text-sm tracking-widest text-stone-400 hover:text-stone-800 transition-colors py-2">
                     <span className="text-lg">←</span> <span className="font-medium text-[12px]">BACK / 上一题</span>
                   </button>
                 ) : <span className="text-[10px] tracking-widest text-stone-300">DNA RESEARCH</span>}
@@ -156,7 +148,7 @@ export const QuizApp: React.FC = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center gap-4 mb-6 bg-stone-50/50 p-4 rounded-3xl border border-stone-50">
-               <div className="w-full md:w-2/5 aspect-[4/5] overflow-hidden rounded-2xl shadow-sm">
+               <div className="w-full md:w-2/5 aspect-[4/5] overflow-hidden rounded-2xl shadow-sm bg-stone-100">
                   <img src={BRAND_MAP[finalAnalysis!.top].image} className="w-full h-full object-cover" alt="Result" />
                </div>
                <div className="w-full md:w-3/5 text-left">
@@ -173,7 +165,7 @@ export const QuizApp: React.FC = () => {
                  <div key={p.key} className="flex justify-between items-center px-2">
                    <span className="text-stone-800 font-bold text-[11px] w-20 text-left tracking-wider uppercase">{DIMENSION_LABELS[p.key as DimensionKey]}</span>
                    <div className="flex-1 mx-3 h-1 bg-stone-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-black transition-all duration-1000 ease-out" style={{ width: `${p.val}%` }} />
+                     <div className="h-full bg-black" style={{ width: `${p.val}%` }} />
                    </div>
                    <span className="text-stone-900 font-serif text-xs w-8 text-right font-bold">{p.val}%</span>
                  </div>
