@@ -92,13 +92,38 @@ export const QuizApp: React.FC = () => {
     return { scores, top, percents: (Object.keys(scores) as DimensionKey[]).map(k => ({ key: k, val: Math.round((scores[k]/total)*100) })) };
   }, [finished, answers]);
 
-  const BRAND_MAP: Record<DimensionKey, any> = {
-    classic: { name: "CHANEL / HERMÈS", image: "/hermes.jpg?v=3", title: "时尚先锋｜自律的自由", desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。" },
-    avantGarde: { name: "BALENCIAGA / GUCCI", image: "/balenciaga.jpg?v=3", title: "艺术先锋｜打破边界的灵魂", desc: "拒绝平庸是你的本能。你不需要奢侈品来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆。" },
-    minimal: { name: "CELINE", image: "/celine.jpg?v=3", title: "极简主义｜内敛的张力", desc: "测出 Celine 的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。" },
-    opulent: { name: "VERSACE", image: "/versace.jpg?v=3", title: "华丽美学｜生命就要肆意闪耀", desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。" },
-    lowKey: { name: "LORO PIANA", image: "/loropiano.jpg?v=3", title: "老钱风｜无需言说的底气", desc: "真正的奢华无需喧哗，羊绒的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于暴发户式的堆砌。" }
-  };
+ const BRAND_MAP: Record<DimensionKey, any> = {
+    classic: { 
+        name: "匠心质感", 
+        image: "/style-classic.jpg?v=4", 
+        title: "时尚先锋｜自律的自由", 
+        desc: "测出这个结果的你，骨子里有一种‘不讨好’的清冷。在你眼中，美是一场残酷的精简。你钟情黑白与廓形，是因为你追求绝对的自我秩序。" 
+    },
+    avantGarde: { 
+        name: "先锋艺术", 
+        image: "/style-avant.jpg?v=4", 
+        title: "艺术先锋｜打破边界的灵魂", 
+        desc: "拒绝平庸是你的本能。你不需要标签来贴金，你本身就是一场流动的实验。这种‘怪美’的背后，是你对世界最温柔的叛逆。" 
+    },
+    minimal: { 
+        name: "极简名伶", 
+        image: "/style-minimal.jpg?v=4", 
+        title: "极简主义｜内敛的张力", 
+        desc: "追求极致简约的你，内心其实最不简单。你的一生都在做减法，剥离那些虚伪的社交辞令，只留下最真实的触感。" 
+    },
+    opulent: { 
+        name: "野性华丽", 
+        image: "/style-opulent.jpg?v=4", 
+        title: "华丽美学｜生命就要肆意闪耀", 
+        desc: "生命就该肆意闪耀，你是华丽美学的极致信徒。你从不掩饰自己的野心和欲望，那种扑面而来的生命力，是你对平庸生活最强有力的反击。" 
+    },
+    lowKey: { 
+        name: "静奢内敛", 
+        image: "/style-lowkey.jpg?v=4", 
+        title: "经典审美｜无需言说的底气", 
+        desc: "真正的质感无需喧哗，细腻的触感是你社交的底气。你追求的是一种‘向下扎根’的稳重。你不屑于浮夸的堆砌。" 
+    }
+};
 
   if (loading) return <div style={{ backgroundColor: THEME.bg }} className="fixed inset-0 flex items-center justify-center italic text-stone-400 animate-pulse font-serif uppercase tracking-widest">DNA Analyzing...</div>;
 
